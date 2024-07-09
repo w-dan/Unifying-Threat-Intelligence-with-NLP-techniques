@@ -139,8 +139,8 @@ def main(pdf_path: str) -> None:
     for url in urls:
         indicators.append(Indicator(name="URL", pattern=f"[url:value = '{url}']", pattern_type="stix"))
 
-    for file in files:
-        indicators.append(Indicator(name="File", pattern=f"[file:name = '{file}']", pattern_type="stix"))
+    # for file in files:
+    #     indicators.append(Indicator(name="File", pattern=f"[file:name = '{file}']", pattern_type="stix"))
 
     # AttackPattern objects for MITRE tactics
     for tactic_id in mitre_tactics_ids:
