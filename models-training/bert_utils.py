@@ -14,6 +14,48 @@ from transformers import PreTrainedTokenizer
 from typing import List, Tuple
 import numpy as np
 from typing import List, Any
+import torch
+from transformers import Trainer, TrainingArguments, AdamW, get_linear_schedule_with_warmup, TrainerCallback
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+
+class CustomTrainerCallback(TrainerCallback):
+    def __init__(self, scheduler):
+        self.scheduler = scheduler
+
+    def on_evaluate(self, args, state, control, **kwargs):
+        metrics = kwargs.get('metrics', {})
+        eval_metric = metrics['eval_loss']
+        self.scheduler.step(eval_metric, state.global_step)
+
+class CustomReduceLROnPlateau(ReduceLROnPlateau):
+    def __init__(self, optimizer, mode='min', factor=0.5, patience=10, threshold=0.01, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-08, verbose=False):
+        super(CustomReduceLROnPlateau, self).__init__(optimizer, mode, factor, patience, threshold, threshold_mode, cooldown, min_lr, eps, verbose)
+
+    def step(self, metrics, epoch=None):
+        current = float(metrics)
+        if epoch is None:
+            epoch = self.last_epoch + 1
+        self.last_epoch = epoch
+
+        if self.is_better(current, self.best):
+            self.best = current
+            self.num_bad_epochs = 0
+        else:
+            self.num_bad_epochs += 1
+
+        if self.num_bad_epochs > self.patience:
+            self._reduce_lr(epoch)
+            self.num_bad_epochs = 0
+
+    def _reduce_lr(self, epoch):
+        for i, param_group in enumerate(self.optimizer.param_groups):
+            old_lr = float(param_group['lr'])
+            new_lr = max(old_lr * self.factor, self.min_lrs[i])
+            if old_lr - new_lr > self.eps:
+                param_group['lr'] = new_lr
+                if self.verbose:
+                    print('Epoch {:5d}: reducing learning rate to {:.4e}.'.format(epoch, new_lr))
+
 
 class CustomDataset(torch.utils.data.Dataset):
     def __init__(self, encodings, labels):
@@ -101,7 +143,46 @@ def fetch_and_preprocess_data(db_name: str, collection_name: str, connection_str
 
     return df
 
+def get_onehot_data(database_name, collection_name, client_uri='mongodb://localhost:27017/'):
+    client = MongoClient(client_uri)
+    db = client[database_name]
+    collection = db[collection_name]
 
+    documents = collection.find()
+    for doc in documents:
+        print(doc.keys())
+        break
+
+    documents = collection.find()
+
+    data = []
+    for doc in documents:
+        corpus = doc.get("corpus", "")
+        tactics = doc.get("tactics", [])
+        
+        data.append({
+            "corpus": preprocess_corpus(corpus),
+            "tactics": tactics
+        })
+
+    df = pd.DataFrame(data)
+
+    print(f"[+] Shape: {df.shape}")
+    #print(df.head())
+
+    df['tactics_length'] = df['tactics'].apply(len)
+   #  print(df['tactics_length'].value_counts())
+
+    tactics = df['tactics'].apply(pd.Series).stack().reset_index(drop=True).unique()
+    one_hot_df = pd.get_dummies(df['tactics'].apply(pd.Series).stack()).groupby(level=0).sum()
+    one_hot_df = one_hot_df.reindex(columns=tactics, fill_value=0)
+
+    df_one_hot_encoded = df.drop(columns=['tactics']).join(one_hot_df)
+
+    print(f"[+] One-Hot Encoded DataFrame Shape: {df_one_hot_encoded.shape}")
+    # print(df_one_hot_encoded.head())
+
+    return df_one_hot_encoded
 
 def process_tactics(df: pd.DataFrame) -> pd.DataFrame:
     """
