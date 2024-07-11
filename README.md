@@ -31,7 +31,6 @@ The project's objective is to enhance threat intelligence processes in three dif
 ├── README.md
 ├── mapper
 │   ├── README.md
-│   ├── app.py
 │   ├── constants.py
 │   ├── mapper.py
 │   └── utils.py
@@ -46,13 +45,14 @@ The project's objective is to enhance threat intelligence processes in three dif
 ├── models-training
 │   ├── README.md
 │   ├── bert_OPTUNA.ipynb
-│   ├── bert_multitag.ipynb
-│   ├── bert_multitag_optimized.ipynb
-│   ├── bert_no_other.ipynb
+│   ├── bert_clauses.ipynb
+│   ├── bert_corpus_base.ipynb
+│   ├── bert_corpus_optimized.ipynb
 │   ├── bert_utils.py
 │   ├── finetuning_llama3-8b.ipynb
-│   ├── roberta_multitag.ipynb
-│   └── roberta_multitag_optimized.ipynb
+│   ├── optuna.py
+│   ├── roberta_corpus_base.ipynb
+│   └── roberta_corpus_optimized.ipynb
 ├── preprocessing-and-EDA
 │   ├── EDA.ipynb
 │   ├── README.md
@@ -61,10 +61,9 @@ The project's objective is to enhance threat intelligence processes in three dif
 ├── samples
 │   └── sample.pdf
 └── scrapers
-    ├── README.md
-    ├── blackberry_insert.py
-    └── github_api_scraper.py
-
+    ├── README.md
+    ├── blackberry_insert.py
+    └── github_api_scraper.py
 ```
 
 # Recommended use
