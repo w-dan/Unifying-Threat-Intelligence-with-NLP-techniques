@@ -90,5 +90,5 @@ Where each of the folders under the repository's root directory may be understoo
 * [README][ADD] Execution && Component diagram
 * [MODELS][ADD] A new model
 * [README][DELETED]
-* [MAPPER][FIX] 
+* [MAPPER][FIX] Bug reading files
 ```
