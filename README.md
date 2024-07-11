@@ -30,30 +30,41 @@ The project's objective is to enhance threat intelligence processes in three dif
 ├── LICENSE
 ├── README.md
 ├── mapper
-│   ├── __pycache__
-│   │   ├── constants.cpython-310.pyc
-│   │   └── utils.cpython-310.pyc
-│   ├── constants.py
-│   ├── mapper.py
-│   └── utils.py
+│   ├── README.md
+│   ├── app.py
+│   ├── constants.py
+│   ├── mapper.py
+│   └── utils.py
 ├── models
-│   ├── README.md
-│   └── bert_multitag
-│       ├── config.json
-│       ├── model.safetensors
-│       ├── special_tokens_map.json
-│       ├── tokenizer_config.json
-│       └── vocab.txt
+│   ├── README.md
+│   └── bert_multitag
+│       ├── config.json
+│       ├── model.safetensors
+│       ├── special_tokens_map.json
+│       ├── tokenizer_config.json
+│       └── vocab.txt
 ├── models-training
-│   ├── README.md
-│   └── bert_multitag.ipynb
+│   ├── README.md
+│   ├── bert_OPTUNA.ipynb
+│   ├── bert_multitag.ipynb
+│   ├── bert_multitag_optimized.ipynb
+│   ├── bert_no_other.ipynb
+│   ├── bert_utils.py
+│   ├── finetuning_llama3-8b.ipynb
+│   ├── roberta_multitag.ipynb
+│   └── roberta_multitag_optimized.ipynb
 ├── preprocessing-and-EDA
-│   └── README.md
-├── requierements.txt
+│   ├── EDA.ipynb
+│   ├── README.md
+│   └── clauses_dataset.ipynb
+├── requirements.txt
 ├── samples
-│   └── sample.pdf
+│   └── sample.pdf
 └── scrapers
-    └── blackberry_insert.py
+    ├── README.md
+    ├── blackberry_insert.py
+    └── github_api_scraper.py
+
 ```
 
 # Recommended use
